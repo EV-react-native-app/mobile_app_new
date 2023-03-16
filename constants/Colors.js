@@ -4,4 +4,5 @@ export const Colors = {
   primary200: '#50577A',
   primary300: '#474E68',
   primary400: '#404258',
+  tileColor1: '#3c3e52',
 };

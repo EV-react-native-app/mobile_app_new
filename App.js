@@ -12,7 +12,8 @@ import Statistics from './screens/Statistics';
 import Map from './screens/Map';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {Colors} from './constants/Colors';
-import BluetoothScreen from './screens/BluetoothScreen';
+import BluetoothScanner from './util/Bluetooth';
+import Dashboard from './screens/Dashboard';
 
 const Stack = createStackNavigator();
 const BottomTab = createBottomTabNavigator();
@@ -123,7 +124,9 @@ function App() {
           component={WelcomePage}
           options={{headerShown: false}}
         />
-        {/* <Stack.Screen name="Bluetooth" component={BluetoothScreen} /> */}
+
+        <Stack.Screen name="Bluetooth" component={BluetoothScanner} />
+        <Stack.Screen name="Dashboard" component={Dashboard} />
       </Stack.Navigator>
     </NavigationContainer>
   );

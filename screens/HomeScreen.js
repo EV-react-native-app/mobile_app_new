@@ -34,11 +34,11 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   buttonContainer: {
-    borderColor: '#404258',
+    borderColor: Colors.primary400,
     borderRadius: 4,
     alignSelf: 'center',
     marginBottom: 4,
-    backgroundColor: '#3c3e52',
+    backgroundColor: Colors.tileColor1,
     padding: 10,
     elevation: 10,
   },
