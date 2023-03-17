@@ -14,7 +14,7 @@ function Summary({navigation}) {
 
   return (
     <View style={styles.container}>
-      <View style={[styles.buttonContainer, styles.margin]}>
+      <View style={[styles.buttonContainer,styles.shadowPropCard, styles.margin]}>
         <TouchableOpacity
           onPress={() => {
             navigation.navigate('Bluetooth');
@@ -35,17 +35,15 @@ export default Summary;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.primary50,
+    backgroundColor: '#282A3A',
   },
   buttonContainer: {
-    borderColor: Colors.primary400,
-    borderRadius: 6,
+    backgroundColor: 'black',
+    borderRadius: 8,
     alignSelf: 'center',
-    marginBottom: 4,
-    backgroundColor: Colors.tileColor1,
+    marginBottom: 16,
     padding: 10,
-    elevation: 25,
-    marginBottom: 15,
+    elevation:10,
   },
 
   margin: {
@@ -60,5 +58,18 @@ const styles = StyleSheet.create({
   },
   textStyle: {
     fontWeight: 'bold',
+    color:'white'
+  },
+  card: {
+    backgroundColor: 'black',
+    borderRadius: 8,
+    padding:20,
+    marginTop: 40,
+  },
+  shadowPropCard: {
+    shadowColor: '#171717',
+    shadowOffset: {width: -2, height: 4},
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
   },
 });

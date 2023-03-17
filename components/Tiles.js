@@ -24,7 +24,7 @@ export default Tiles;
 const styles = StyleSheet.create({
   tilesContainer: {
     borderColor: Colors.primary400,
-    borderRadius: 6,
+    borderRadius: 12,
     alignSelf: 'center',
     backgroundColor: Colors.tileColor1,
     padding: 10,
@@ -41,15 +41,18 @@ const styles = StyleSheet.create({
   textData: {
     fontSize: 34,
     fontWeight: 'bold',
+    color:'white'
   },
   unitViewStyle: {
     alignItems: 'center',
   },
   textUnit: {
     fontWeight: 'bold',
+    color:'white'
   },
   textStyle: {
     fontWeight: 'bold',
     textAlign: 'center',
+    color:'white'
   },
 });

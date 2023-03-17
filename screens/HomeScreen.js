@@ -5,7 +5,7 @@ import {Colors} from '../constants/Colors';
 function HomeScreen({navigation}) {
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>Welcome to HomeScreen</Text>
+      <Text style={styles.text}>Welcome to Cell Doc</Text>
       <View style={styles.buttonContainer}>
         <TouchableOpacity
           onPress={() => {
@@ -25,21 +25,22 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: Colors.primary100,
+    backgroundColor: '#282A3A',
   },
   text: {
-    fontSize: 18,
+    fontSize: 24,
     color: 'white',
-    marginBottom: 12,
+    marginBottom: 24,
     fontWeight: 'bold',
   },
   buttonContainer: {
     borderColor: Colors.primary400,
-    borderRadius: 4,
+    borderRadius: 12,
     alignSelf: 'center',
     marginBottom: 4,
-    backgroundColor: Colors.tileColor1,
-    padding: 10,
+    backgroundColor: 'black',
+    paddingHorizontal: 24,
+    paddingVertical:12,
     elevation: 10,
   },
   pressed: {
@@ -47,5 +48,6 @@ const styles = StyleSheet.create({
   },
   textStyle: {
     fontWeight: 'bold',
+    color:'white'
   },
 });

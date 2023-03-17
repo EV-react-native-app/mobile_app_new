@@ -58,8 +58,8 @@ const BluetoothScanner = ({navigation}) => {
         console.log(state);
         const newLogData = logData;
         newLogData.push(state);
-        await setLogCount(newLogData.length);
-        await setLogData(newLogData);
+         setLogCount(newLogData.length);
+        setLogData(newLogData);
         subscription.remove();
       }, true);
       return () => subscription.remove();
@@ -101,8 +101,8 @@ const BluetoothScanner = ({navigation}) => {
     );
   };
 
-  const handleConnectButtonClick = async () => {
-    const tapCode = tapDevice.id;
+  const handleConnectButtonClick = async (id) => {
+    const tapCode = id;
     await manager
       .connectToDevice(tapCode)
       .then(async device => {
@@ -129,50 +129,33 @@ const BluetoothScanner = ({navigation}) => {
       <View style={styles.style2}>
         <View style={styles.style2}>
           <Text style={styles.textStyle1}>Bluetooth Log ({logCount})</Text>
+          <View style={{height:8 }}/>
           <FlatList
             data={logData}
             renderItem={({item}) => {
-              return <Text>{item}</Text>;
+              return <Text style={styles.textStyle1}>{item}</Text>;
             }}
           />
-          <View style={styles.style3}>
-            <View style={styles.style4}>
-              <Button
-                title="Turn On Bluetooth"
+          <View style={{height:16 }}/>
+          <Button
+                title="Turn On/Off Bluetooth"
+                color='black'
                 onPress={async () => {
-                  const btState = await manager.state();
+                  const btState = await manager.state()
                   // test is bluetooth is supported
-                  if (btState === 'Unsupported') {
-                    Alert.alert('Bluetooth is not supported');
-                    return false;
+                  if (btState==="Unsupported") {
+                    alert("Bluetooth is not supported");
+                    return (false);
                   }
                   // enable if it is not powered on
-                  if (btState !== 'PoweredOn') {
+                  if (btState!=="PoweredOn") {
                     await manager.enable();
-                  }
-                  return true;
-                }}
-              />
-            </View>
-            <View>
-              <Button
-                title="Turn Off Bluetooth"
-                onPress={async () => {
-                  const btState = await manager.state();
-                  // test is bluetooth is supported
-                  if (btState === 'Unsupported') {
-                    Alert.alert('Bluetooth is not supported');
-                    return false;
-                  }
-                  // disable if it is powered on
-                  if (btState === 'PoweredOn') {
+                  } else {
                     await manager.disable();
                   }
-                  return true;
+                  return (true);
                 }}
               />
-            </View>
-          </View>
         </View>
 
         <View style={styles.style5}>
@@ -181,8 +164,8 @@ const BluetoothScanner = ({navigation}) => {
             data={Object.values(scannedDevices)}
             renderItem={({item}) => {
               return (
-                <TouchableOpacity onPress={handleConnectButtonClick}>
-                  <Text>{`${item.name} (${item.id})`}</Text>
+                <TouchableOpacity onPress={()=>handleConnectButtonClick(item.id)}>
+                  <Text style={styles.textStyle1}>{`${item.name} (${item.id})`}</Text>
                 </TouchableOpacity>
               );
             }}
@@ -190,7 +173,10 @@ const BluetoothScanner = ({navigation}) => {
           />
           <Button
             title="Scan Devices"
+            color='black'
             onPress={async () => {
+              
+
               const btState = await manager.state();
               // test if bluetooth is powered on
               if (btState !== 'PoweredOn') {
@@ -209,17 +195,17 @@ const BluetoothScanner = ({navigation}) => {
                   // found a bluetooth device
                   if (device) {
                     if (device.name != null) {
-                      // console.log(`${device.name} (${device.id})}`);
+                      console.log(`${device.name} (${device.id})}`);
                       const newScannedDevices = scannedDevices;
                       newScannedDevices[device.id] = device;
                       setDeviceCount(Object.keys(newScannedDevices).length);
                       setScannedDevices(scannedDevices);
 
-                      //Testing
-                      if (device.id == device.id) {
-                        manager.stopDeviceScan();
-                        setTapDevice(device);
-                      }
+                      // //Testing
+                      // if (device.id == device.id) {
+                      //   manager.stopDeviceScan();
+                      //   setTapDevice(device);
+                      // }
                     }
                   }
                 });
@@ -238,18 +224,18 @@ export default BluetoothScanner;
 const styles = StyleSheet.create({
   style1: {
     flex: 1,
-    backgroundColor: 'black',
+    backgroundColor:'#282A3A',
   },
   style2: {
     flex: 1,
     padding: 10,
   },
   textStyle1: {
-    fontWeight: 'bold',
+    fontWeight: 'bold',color:'white',
   },
   style3: {
     flexDirection: 'row',
-    justifyContent: 'center',
+    justifyContent: 'space-between',
   },
   style4: {
     marginRight: 10,

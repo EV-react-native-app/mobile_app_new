@@ -46,7 +46,7 @@ function VoltageVsTime() {
 
       <LineChart
         data={data}
-        width={Dimensions.get('window').width} // from react-native
+        width={Dimensions.get('window').width-24} // from react-native
         height={220}
         // xLabelsOffset="Time(s)"
         // yAxisLabel=""
@@ -72,7 +72,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     // justifyContent: 'center',
-    backgroundColor: Colors.primary50,
+    backgroundColor: '#282A3A',
   },
   text: {
     color: 'black',
@@ -90,9 +90,9 @@ const styles = StyleSheet.create({
   innerContainer: {
     borderWidth: 1,
     backgroundColor: Colors.primary200,
-    borderRadius: 4,
+    borderRadius: 8,
     borderColor: Colors.primary400,
-    marginTop: 10,
+    marginTop: 20,
     paddingHorizontal: 20,
     paddingVertical: 4,
   },
