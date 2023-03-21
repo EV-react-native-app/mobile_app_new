@@ -1,16 +1,28 @@
-import {StyleSheet, View, Text} from 'react-native';
+import {StyleSheet, View, Text, Dimensions} from 'react-native';
 import Tiles from '../components/Tiles';
 import {Colors} from '../constants/Colors';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import {savedData} from '../util/Bluetooth';
-import {useEffect} from 'react';
+
+import {useSelector} from 'react-redux';
 
 function Dashboard() {
   const currentDate = new Date().toLocaleDateString();
 
-  useEffect(() => {
-    console.log('Recieved Data: ', savedData.dataPoints);
-  }, []);
+  const data = useSelector(state => state.data);
+  // console.log(data);
+
+  const date = data[0],
+    time = data[1],
+    vol = parseFloat(data[2]).toFixed(2),
+    cur = parseFloat(data[3]).toFixed(2),
+    temp1 = parseFloat(data[4]),
+    temp2 = parseFloat(data[5]),
+    temp3 = parseFloat(data[6]),
+    selfcur = parseFloat(data[7]).toFixed(2);
+
+  const avgtemp = ((temp1 + temp2 + temp3) / 3).toFixed(1);
+
+  const power = ((vol * cur) / 1000).toFixed(2);
 
   return (
     <View style={styles.mainContainer}>
@@ -37,20 +49,20 @@ function Dashboard() {
       </View>
 
       <View style={styles.container2}>
-        <View style={styles.row1con2}>
-          <Tiles data="50.62" unit="V" dataname="Voltage" />
-          <Tiles data="1.02" unit="A" dataname="Current" />
+        <View style={styles.tileCover}>
+          <Tiles data={vol} unit="V" dataname="Voltage" />
+          <Tiles data={cur} unit="A" dataname="Current" />
           <Tiles data="35.0" unit="%" dataname="Battery" />
         </View>
-        <View style={styles.row2con2}>
-          <Tiles data="28.5" unit="C" dataname="Avg Temp." />
+        <View style={styles.tileCover}>
+          <Tiles data={avgtemp} unit="C" dataname="Avg Temp." />
           <Tiles data="10.24" unit="km" dataname="Distance" />
-          <Tiles data="0.67" unit="kW" dataname="Power" />
+          <Tiles data={power} unit="kW" dataname="Power" />
         </View>
-        <View style={styles.row3con2}>
-          <Tiles data="3.17" unit="Km/h" dataname="Velocity" />
-          <Tiles data="40.2" unit="km/kWh" dataname="Mileage" />
-          <Tiles data="10.00" unit="kW" dataname="Power" />
+        <View style={styles.tileCover}>
+          <Tiles data="30.17" unit="Km/h" dataname="Velocity" />
+          <Tiles data="40.20" unit="km/kWh" dataname="Mileage" />
+          <Tiles data="1.00" unit="kWh" dataname="Energy" />
         </View>
       </View>
     </View>
@@ -62,7 +74,8 @@ export default Dashboard;
 const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
-    backgroundColor: Colors.primary50,
+    backgroundColor: Colors.bgColor,
+    maxWidth: Dimensions.get('window').width,
   },
   container1: {
     marginTop: 20,
@@ -73,29 +86,16 @@ const styles = StyleSheet.create({
   container2: {
     marginTop: 20,
   },
-  leftBox: {},
-  rightBox: {},
-  row1con2: {
+
+  tileCover: {
     flexDirection: 'row',
     padding: 10,
     alignSelf: 'center',
     justifyContent: 'space-between',
   },
-  row2con2: {
-    flexDirection: 'row',
-    padding: 10,
-    alignSelf: 'center',
-    justifyContent: 'space-between',
-  },
-  row3con2: {
-    // flex: 1,
-    flexDirection: 'row',
-    padding: 10,
-    alignSelf: 'center',
-    justifyContent: 'space-between',
-  },
+
   textStyle: {
-    color: Colors.primary400,
+    color: 'white',
     fontWeight: 'bold',
     marginLeft: 4,
   },

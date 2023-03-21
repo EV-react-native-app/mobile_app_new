@@ -3,7 +3,7 @@ import {Colors} from '../constants/Colors';
 
 function Tiles({data, unit, dataname}) {
   return (
-    <View style={styles.tilesContainer}>
+    <View style={[styles.tilesContainer, styles.shadowPropCard]}>
       <TouchableOpacity>
         <View style={styles.innerContainer}>
           <View style={styles.dataViewStyle}>
@@ -23,10 +23,9 @@ export default Tiles;
 
 const styles = StyleSheet.create({
   tilesContainer: {
-    borderColor: Colors.primary400,
     borderRadius: 12,
     alignSelf: 'center',
-    backgroundColor: Colors.tileColor1,
+    backgroundColor: 'black',
     padding: 10,
     elevation: 10,
     borderWidth: 2,
@@ -35,24 +34,29 @@ const styles = StyleSheet.create({
   innerContainer: {
     flexDirection: 'column',
   },
-  dataViewStyle: {
-    // marginRight: 4,
-  },
+  dataViewStyle: {},
   textData: {
-    fontSize: 34,
+    fontSize: 30,
     fontWeight: 'bold',
-    color:'white'
+    color: 'white',
+    alignSelf: 'center',
   },
   unitViewStyle: {
     alignItems: 'center',
   },
   textUnit: {
     fontWeight: 'bold',
-    color:'white'
+    color: 'white',
   },
   textStyle: {
     fontWeight: 'bold',
     textAlign: 'center',
-    color:'white'
+    color: 'white',
+  },
+  shadowPropCard: {
+    shadowColor: Colors.cardShadowColor,
+    shadowOffset: {width: -2, height: 4},
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
   },
 });

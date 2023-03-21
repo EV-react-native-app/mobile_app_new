@@ -5,4 +5,6 @@ export const Colors = {
   primary300: '#474E68',
   primary400: '#404258',
   tileColor1: '#3c3e52',
+  bgColor: '#282A3A',
+  cardShadowColor: '#171717',
 };

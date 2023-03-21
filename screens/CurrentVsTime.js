@@ -8,35 +8,16 @@ function CurrentVsTime() {
     labels: ['0', '2', '4', '6', '8', '10'],
     datasets: [
       {
-        data: [-15],
-      },
-      {
-        data: [-10],
-      },
-      {
-        data: [-5],
-      },
-      {
-        data: [0, 0, 0, 0, 0, 0],
-        color: (opacity = 0) => `rgba(255, 0, 0, ${opacity})`,
-      },
-      {
-        data: [5],
-      },
-      {
-        data: [10],
-      },
-      {
-        data: [15],
+        data: [-15, -10, 0, 5, 10, 15],
       },
     ],
   };
 
   //configuration of Chart
   const chartConfig = {
-    backgroundColor: Colors.primary400,
-    backgroundGradientFrom: Colors.primary300,
-    backgroundGradientTo: Colors.primary100,
+    backgroundColor: 'black',
+    backgroundGradientFrom: '#000',
+    backgroundGradientTo: '#ccf',
     decimalPlaces: 2, // optional, defaults to 2dp
     color: (opacity = 0) => `rgba(000, 000, 000, ${opacity})`,
     labelColor: (opacity = 1) => `rgba(192, 255, 255, ${opacity})`,
@@ -44,9 +25,9 @@ function CurrentVsTime() {
       borderRadius: 16,
     },
     propsForDots: {
-      r: '1',
-      strokeWidth: '0',
-      stroke: Colors.primary400,
+      r: '5',
+      strokeWidth: '3',
+      stroke: 'white',
     },
   };
 
@@ -65,7 +46,7 @@ function CurrentVsTime() {
 
       <LineChart
         data={data}
-        width={Dimensions.get('window').width-24} // from react-native
+        width={Dimensions.get('window').width - 24} // from react-native
         height={220}
         // xLabelsOffset="Time(s)"
         // yAxisLabel=""

@@ -1,37 +1,59 @@
-import {StyleSheet, Text, View, Dimensions} from 'react-native';
+import {StyleSheet, Text, View, Dimensions, SafeAreaView} from 'react-native';
 import {Colors} from '../constants/Colors';
 import {LineChart} from 'react-native-chart-kit';
 
+import {useSelector} from 'react-redux';
+import {useEffect, useState} from 'react';
+
 function VoltageVsTime() {
-  //chart data
-  const data = {
-    labels: [0, 2, 4, 6, 8, 10],
+  // const parseData = useSelector(state => state.data);
+
+  // const vol = parseFloat(parseData[2]);
+  // console.log(vol);
+
+  // const [data, setData] = useState([0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
+
+  // useEffect(() => {
+  //   setData(prevData => {
+  //     const newData = [...prevData];
+  //     newData.shift();
+  //     newData.push(vol);
+  //     return newData;
+  //   });
+  // }, [vol]);
+
+  // console.log(data);
+
+  // chart data
+  const chartData = {
+    labels: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
     datasets: [
       {
-        data: [45, 26, 72, 89, 50, 35],
+        // data: data,
+        data: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
       },
     ],
   };
 
-  //configuration of Chart
+  // configuration of Chart
   const chartConfig = {
-    backgroundColor: Colors.primary400,
-    backgroundGradientFrom: Colors.primary300,
-    backgroundGradientTo: Colors.primary100,
+    backgroundColor: 'black',
+    backgroundGradientFrom: '#000',
+    backgroundGradientTo: '#ccf',
     decimalPlaces: 2, // optional, defaults to 2dp
-    color: (opacity = 1) => `rgba(000, 255, 255, ${opacity})`,
+    color: (opacity = 1) => `rgba(000, 000, 000, ${opacity})`,
     labelColor: (opacity = 1) => `rgba(192, 255, 255, ${opacity})`,
     style: {
       borderRadius: 16,
     },
     propsForDots: {
-      r: '6',
-      strokeWidth: '4',
-      stroke: Colors.primary400,
+      r: '5',
+      strokeWidth: '3',
+      stroke: 'white',
     },
   };
 
-  //main code
+  // main code
 
   return (
     <View style={styles.container}>
@@ -43,19 +65,18 @@ function VoltageVsTime() {
           <Text>Voltage</Text>
         </View>
       </View>
-
       <LineChart
-        data={data}
-        width={Dimensions.get('window').width-24} // from react-native
+        data={chartData}
+        width={Dimensions.get('window').width - 24} // from react-native
         height={220}
         // xLabelsOffset="Time(s)"
         // yAxisLabel=""
         yAxisSuffix="V"
-        xAxisLabel="s"
+        // xAxisLabel="s"
         yAxisInterval={0.5} // optional, defaults to 1
         chartConfig={chartConfig}
         withShadow={false}
-        // bezier
+        bezier
         style={{
           marginVertical: 10,
           borderRadius: 12,
@@ -71,7 +92,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    // justifyContent: 'center',
     backgroundColor: '#282A3A',
   },
   text: {
@@ -104,3 +124,6 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
 });
+
+{
+}

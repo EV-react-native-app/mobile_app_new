@@ -11,6 +11,9 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import {BleManager} from 'react-native-ble-plx';
+import {useDispatch} from 'react-redux';
+import {dataAction} from '../store';
+import {Colors} from '../constants/Colors';
 
 export const manager = new BleManager();
 
@@ -36,21 +39,18 @@ const CHARACTERISTIC_UUID = 'beb5483e-36e1-4688-b7f5-ea07361b26a8';
 // - scan bluetooth devices in the area
 // - list the scanned devices
 
-// create a savedData object
-export const savedData = {
-  dataPoints: [], // create an empty array to store the data points
-};
-
 const BluetoothScanner = ({navigation}) => {
   const [logData, setLogData] = useState([]);
   const [logCount, setLogCount] = useState(0);
   const [scannedDevices, setScannedDevices] = useState({});
   const [deviceCount, setDeviceCount] = useState(0);
 
-  const [tapDevice, setTapDevice] = useState(null);
+  // const [tapDevice, setTapDevice] = useState(null);
 
   //for navigating
   const [isConnected, setIsConnected] = useState(false);
+
+  const dispatch = useDispatch();
 
   useEffect(() => {
     manager.onStateChange(state => {
@@ -58,7 +58,7 @@ const BluetoothScanner = ({navigation}) => {
         console.log(state);
         const newLogData = logData;
         newLogData.push(state);
-         setLogCount(newLogData.length);
+        setLogCount(newLogData.length);
         setLogData(newLogData);
         subscription.remove();
       }, true);
@@ -90,18 +90,15 @@ const BluetoothScanner = ({navigation}) => {
         const buffer = Buffer.from(parsedValue);
 
         const decodedData = buffer.toString('utf8');
-        console.log(decodedData); //Data coming from ESP32
 
-        // const dataPoint = {
-        //   decodedData: decodedData,
-        // };
-
-        // savedData.dataPoints.push(dataPoint);
+        const decodeArr = decodedData.split(' ');
+        // console.log(decodeArr);
+        dispatch(dataAction.setData(decodeArr));
       },
     );
   };
 
-  const handleConnectButtonClick = async (id) => {
+  const handleConnectButtonClick = async id => {
     const tapCode = id;
     await manager
       .connectToDevice(tapCode)
@@ -129,33 +126,33 @@ const BluetoothScanner = ({navigation}) => {
       <View style={styles.style2}>
         <View style={styles.style2}>
           <Text style={styles.textStyle1}>Bluetooth Log ({logCount})</Text>
-          <View style={{height:8 }}/>
+          <View style={{height: 8}} />
           <FlatList
             data={logData}
             renderItem={({item}) => {
               return <Text style={styles.textStyle1}>{item}</Text>;
             }}
           />
-          <View style={{height:16 }}/>
+          <View style={{height: 16}} />
           <Button
-                title="Turn On/Off Bluetooth"
-                color='black'
-                onPress={async () => {
-                  const btState = await manager.state()
-                  // test is bluetooth is supported
-                  if (btState==="Unsupported") {
-                    alert("Bluetooth is not supported");
-                    return (false);
-                  }
-                  // enable if it is not powered on
-                  if (btState!=="PoweredOn") {
-                    await manager.enable();
-                  } else {
-                    await manager.disable();
-                  }
-                  return (true);
-                }}
-              />
+            title="Turn On/Off Bluetooth"
+            color="black"
+            onPress={async () => {
+              const btState = await manager.state();
+              // test is bluetooth is supported
+              if (btState === 'Unsupported') {
+                Alert.alert('Bluetooth is not supported');
+                return false;
+              }
+              // enable if it is not powered on
+              if (btState !== 'PoweredOn') {
+                await manager.enable();
+              } else {
+                await manager.disable();
+              }
+              return true;
+            }}
+          />
         </View>
 
         <View style={styles.style5}>
@@ -164,8 +161,12 @@ const BluetoothScanner = ({navigation}) => {
             data={Object.values(scannedDevices)}
             renderItem={({item}) => {
               return (
-                <TouchableOpacity onPress={()=>handleConnectButtonClick(item.id)}>
-                  <Text style={styles.textStyle1}>{`${item.name} (${item.id})`}</Text>
+                <TouchableOpacity
+                  onPress={() => handleConnectButtonClick(item.id)}>
+                  <Text
+                    style={
+                      styles.textStyle1
+                    }>{`${item.name} (${item.id})`}</Text>
                 </TouchableOpacity>
               );
             }}
@@ -173,10 +174,8 @@ const BluetoothScanner = ({navigation}) => {
           />
           <Button
             title="Scan Devices"
-            color='black'
+            color="black"
             onPress={async () => {
-              
-
               const btState = await manager.state();
               // test if bluetooth is powered on
               if (btState !== 'PoweredOn') {
@@ -195,7 +194,7 @@ const BluetoothScanner = ({navigation}) => {
                   // found a bluetooth device
                   if (device) {
                     if (device.name != null) {
-                      console.log(`${device.name} (${device.id})}`);
+                      // console.log(`${device.name} (${device.id})}`);
                       const newScannedDevices = scannedDevices;
                       newScannedDevices[device.id] = device;
                       setDeviceCount(Object.keys(newScannedDevices).length);
@@ -224,14 +223,15 @@ export default BluetoothScanner;
 const styles = StyleSheet.create({
   style1: {
     flex: 1,
-    backgroundColor:'#282A3A',
+    backgroundColor: Colors.bgColor,
   },
   style2: {
     flex: 1,
     padding: 10,
   },
   textStyle1: {
-    fontWeight: 'bold',color:'white',
+    fontWeight: 'bold',
+    color: 'white',
   },
   style3: {
     flexDirection: 'row',

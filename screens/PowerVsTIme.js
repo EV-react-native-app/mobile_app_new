@@ -65,7 +65,7 @@ function PowerVsTime() {
 
       <LineChart
         data={data}
-        width={Dimensions.get('window').width-24} // from react-native
+        width={Dimensions.get('window').width - 24} // from react-native
         height={400}
         // xLabelsOffset="Time(s)"
         // yAxisLabel=""
