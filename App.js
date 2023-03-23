@@ -15,6 +15,12 @@ import {Colors} from './constants/Colors';
 import BluetoothScanner from './util/Bluetooth';
 import Dashboard from './screens/Dashboard';
 import {Text} from 'react-native';
+// import { NavigationContainer } from '@react-navigation/native';
+// import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import LoginScreen from './screens/LoginScreen';
+// import HomeScreen from './screens/HomeScreen';
+
+// const Stack = createNativeStackNavigator();
 
 const Stack = createStackNavigator();
 const BottomTab = createBottomTabNavigator();
@@ -137,11 +143,13 @@ function App() {
         },
       }}>
       <Stack.Navigator>
-        <Stack.Screen
+        <Stack.Screen options={{ headerShown: false}} name="Login" component={LoginScreen} />
+        <Stack.Screen name="Home" component={HomeScreen} />
+        {/* <Stack.Screen
           name="HomeScreen"
           component={HomeScreen}
           options={{headerShown: false}}
-        />
+        /> */}
         <Stack.Screen
           name="Details"
           component={WelcomePage}
