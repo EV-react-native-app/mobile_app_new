@@ -70,7 +70,7 @@ const BluetoothScanner = ({navigation}) => {
 
   useEffect(() => {
     if (isConnected) {
-      navigation.navigate('Dashboard');
+      navigation.navigate('Details');
     }
   }, [isConnected]);
 
@@ -94,6 +94,7 @@ const BluetoothScanner = ({navigation}) => {
         const decodeArr = decodedData.split(' ');
         // console.log(decodeArr);
         dispatch(dataAction.setData(decodeArr));
+        dispatch(dataAction.setSensePCBConnected({value:true}));
       },
     );
   };

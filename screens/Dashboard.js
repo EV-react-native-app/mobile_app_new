@@ -1,15 +1,18 @@
-import {StyleSheet, View, Text, Dimensions} from 'react-native';
+import {StyleSheet, View, Text, Dimensions, PermissionsAndroid} from 'react-native';
 import Tiles from '../components/Tiles';
 import {Colors} from '../constants/Colors';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {useEffect, useState} from 'react';
-
 import Geolocation from '@react-native-community/geolocation';
 import {useSelector} from 'react-redux';
+// import {fi}
+import { collection, setDoc, doc } from "firebase/firestore";
 
 function Dashboard() {
+ 
   const currentDate = new Date().toLocaleDateString();
-
+  var onetime = false;
+  var lat1 = 0.0, long1 = 0.0;
   const [
     currentLongitude,
     setCurrentLongitude
@@ -22,7 +25,9 @@ function Dashboard() {
     locationStatus,
     setLocationStatus
   ] = useState('');
-
+  const [currentSpeed, setCurrentSpeed] = useState('NaN');
+  const [currentDistane, setCurrentDistance] = useState('NaN');
+  
   useEffect(() => {
     const requestLocationPermission = async () => {
       if (Platform.OS === 'ios') {
@@ -62,13 +67,15 @@ function Dashboard() {
     return () => clearInterval(interval);
   }, []);
 
+
+ 
   const getOneTimeLocation = () => {
     setLocationStatus('Getting Location ...');
     Geolocation.getCurrentPosition(
       //Will give you the current location
-      (position) => {
+      async (position) => {
         setLocationStatus('You are Here');
-
+        console.log(position);
         //getting the Longitude from the location json
         const currentLongitude = 
           JSON.stringify(position.coords.longitude);
@@ -76,12 +83,45 @@ function Dashboard() {
         //getting the Latitude from the location json
         const currentLatitude = 
           JSON.stringify(position.coords.latitude);
-
+        const currentspeed = 
+          JSON.stringify(position.coords.speed);
+        setCurrentSpeed(currentspeed);
         //Setting Longitude state
         setCurrentLongitude(currentLongitude);
         
         //Setting Longitude state
         setCurrentLatitude(currentLatitude);
+        if(!onetime){
+          lat1 = position.coords.latitude;
+          long1 = position.coords.longitude;
+          onetime = true;
+        }
+        const R = 6371e3; // metres
+        var lat2 = parseFloat(currentLatitude);
+        var long2 = parseFloat(currentLongitude);
+        console.log(lat1.toString() + " " + lat2.toString());
+        const φ1 = lat1 * Math.PI/180; // φ, λ in radians
+        const φ2 = lat2 * Math.PI/180;
+        const Δφ = (lat2-lat1) * Math.PI/180;
+        const Δλ = (long2-long1) * Math.PI/180;
+
+        const a = Math.sin(Δφ/2) * Math.sin(Δφ/2) +
+                  Math.cos(φ1) * Math.cos(φ2) *
+                  Math.sin(Δλ/2) * Math.sin(Δλ/2);
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+
+        const d = R * c; // in metres
+        console.log("distance" + d.toString());
+        setCurrentDistance(d.toFixed(2));
+        
+
+        await setDoc(doc(db, "cities", "LA"), {
+          name: "Los Angeles",
+          state: "CA",
+          country: "USA"
+        });
+        
+
       },
       (error) => {
         setLocationStatus(error.message);
@@ -109,7 +149,10 @@ function Dashboard() {
         //getting the Latitude from the location json
         const currentLatitude = 
           JSON.stringify(position.coords.latitude);
-
+          
+        const currentspeed = 
+          JSON.stringify(position.coords.speed);
+        setCurrentSpeed(currentspeed);
         //Setting Longitude state
         setCurrentLongitude(currentLongitude);
 
@@ -147,7 +190,7 @@ function Dashboard() {
         <View>
           {/* Left Box */}
           <View>
-            <Text style={styles.textStyle}>Date: {currentDate}</Text>
+            <Text style={styles.textStyle}>Date : {currentDate}</Text>
           </View>
           <View>
             <View style={styles.iconView}>
@@ -159,27 +202,12 @@ function Dashboard() {
             </View>
           </View>
         </View>
-        <View>
-          {/* Right Box */}
+        {/* <View>
           <Tiles dataname="0 hr 0 min" unit="Upload" />
-        </View>
+        </View> */}
       </View>
-      <Text
-            style={{
-              justifyContent: 'center',
-              alignItems: 'center',
-              marginTop: 16,
-            }}>
-            Longitude: {currentLongitude}
-          </Text>
-          <Text
-            style={{
-              justifyContent: 'center',
-              alignItems: 'center',
-              marginTop: 16,
-            }}>
-            Latitude: {currentLatitude}
-          </Text>
+      
+      
       <View style={styles.container2}>
         <View style={styles.tileCover}>
           <Tiles data={vol} unit="V" dataname="Voltage" />
@@ -188,13 +216,69 @@ function Dashboard() {
         </View>
         <View style={styles.tileCover}>
           <Tiles data={avgtemp} unit="C" dataname="Avg Temp." />
-          <Tiles data="10.24" unit="km" dataname="Distance" />
+          <Tiles data={currentDistane} unit="m" dataname="Distance" />
           <Tiles data={power} unit="kW" dataname="Power" />
         </View>
         <View style={styles.tileCover}>
-          <Tiles data="30.17" unit="Km/h" dataname="Velocity" />
+          <Tiles data={currentSpeed} unit="Km/h" dataname="Velocity" />
           <Tiles data="40.20" unit="km/kWh" dataname="Mileage" />
           <Tiles data="1.00" unit="kWh" dataname="Energy" />
+        </View>
+      </View>
+      <View style = {{
+        flexDirection:'column',
+        borderRadius: 12,
+        marginHorizontal:40,
+    backgroundColor: 'black',
+        marginTop:10,
+    padding: 16,
+    elevation: 10,
+    borderWidth: 2,
+    height:100,
+      }}>
+        <View style={{
+          flexDirection:'row',
+          display:'flex'
+        }}>
+<Text
+            style={{
+              fontSize: 14,
+    fontWeight: 'bold',
+    color: 'grey',
+    marginRight:8,
+            }}>
+            Longitude 
+          </Text>
+          <Text
+            style={{
+              fontSize: 16,
+    fontWeight: 'bold',
+    color: 'white',
+            }}>
+             {currentLongitude}
+          </Text>
+        </View>
+        <View style={{
+          flexDirection:'row',
+          display:'flex'
+        }}>
+<Text
+            style={{
+              fontSize: 14,
+    fontWeight: 'bold',
+    color: 'grey',
+    marginRight:8,
+            }}>
+            Latitude 
+          </Text>
+          <Text
+            style={{
+              fontSize: 16,
+    fontWeight: 'bold',
+    color: 'white',
+            }}>
+             {currentLatitude}
+          </Text>
         </View>
       </View>
     </View>
@@ -211,7 +295,7 @@ const styles = StyleSheet.create({
   },
   container1: {
     marginTop: 20,
-    marginHorizontal: 15,
+    marginHorizontal: 24,
     flexDirection: 'row',
     justifyContent: 'space-between',
   },

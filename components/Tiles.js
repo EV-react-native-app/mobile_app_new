@@ -29,6 +29,8 @@ const styles = StyleSheet.create({
     padding: 10,
     elevation: 10,
     borderWidth: 2,
+    width:100,
+    height:120,
     marginRight: 10,
   },
   innerContainer: {
@@ -36,22 +38,25 @@ const styles = StyleSheet.create({
   },
   dataViewStyle: {},
   textData: {
-    fontSize: 30,
+    fontSize: 20,
     fontWeight: 'bold',
     color: 'white',
     alignSelf: 'center',
   },
   unitViewStyle: {
     alignItems: 'center',
+    marginTop:8,
   },
   textUnit: {
     fontWeight: 'bold',
     color: 'white',
   },
   textStyle: {
+    marginTop:4,
     fontWeight: 'bold',
     textAlign: 'center',
-    color: 'white',
+    color: 'grey',
+    fontSize:10
   },
   shadowPropCard: {
     shadowColor: Colors.cardShadowColor,

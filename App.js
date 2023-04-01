@@ -1,4 +1,4 @@
-import React from 'react';
+import React,{useEffect} from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
@@ -21,11 +21,14 @@ import LoginScreen from './screens/LoginScreen';
 // import HomeScreen from './screens/HomeScreen';
 
 // const Stack = createNativeStackNavigator();
-
+import {useDispatch} from 'react-redux';
+import {dataAction} from './store';
+import {useSelector} from 'react-redux';
 const Stack = createStackNavigator();
 const BottomTab = createBottomTabNavigator();
 
 function WelcomePage() {
+  const isSensePCBConnected = useSelector(state => state.isSensePCBConnected);
   return (
     <BottomTab.Navigator
       screenOptions={{
@@ -48,6 +51,17 @@ function WelcomePage() {
         tabBarActiveTintColor: 'white',
         tabBarInactiveTintColor: '#3A98B9',
       }}>
+      {isSensePCBConnected ? <BottomTab.Screen
+        name="Dashboard"
+        component={Dashboard}
+        options={{
+          tabBarShowLabel: false,
+          tabBarIcon: ({color, size}) => (
+            <MaterialIcons name="live-tv" color={color} size={size} />
+          ),
+          title: 'Dashboard',
+        }}
+      /> :
       <BottomTab.Screen
         name="Summary"
         component={Summary}
@@ -58,7 +72,7 @@ function WelcomePage() {
           ),
           title: 'Cell Doc',
         }}
-      />
+      />}
 
       <BottomTab.Screen
         name="Temp Vs Time"
@@ -135,6 +149,14 @@ function WelcomePage() {
 }
 
 function App() {
+
+  const dispatch = useDispatch();
+
+  
+  useEffect(() => {
+    dispatch(dataAction.setSensePCBConnected({value:false}));
+  }, [])
+  
   return (
     <NavigationContainer
       theme={{
@@ -157,7 +179,9 @@ function App() {
         />
 
         <Stack.Screen name="Bluetooth" component={BluetoothScanner} />
-        <Stack.Screen name="Dashboard" component={Dashboard} />
+        {/* <Stack.Screen  options={{
+          headerStyle: { backgroundColor: 'papayawhip', }     
+        }} name="Dashboard" component={Dashboard} /> */}
       </Stack.Navigator>
     </NavigationContainer>
   );
