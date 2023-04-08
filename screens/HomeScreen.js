@@ -1,18 +1,36 @@
 import {StyleSheet, Text, View} from 'react-native';
 import {TouchableOpacity} from 'react-native-gesture-handler';
+import React, {useEffect, useState,useLayoutEffect,useMemo} from 'react';
 import {Colors} from '../constants/Colors';
 import { auth } from './firebase'
 import { useNavigation } from '@react-navigation/native'
+import  AsyncStorage  from '@react-native-async-storage/async-storage';
 
 function HomeScreen() {
-  const navigation=useNavigation()
+  const [email, setEmail] = useState('null');
+  let emailg;
+  useEffect(() => {
+      const getemail=(async ()=> {
+          try{
+           emailg=await AsyncStorage.getItem('email1');
+            console.log("laj",emailg);
+            setEmail(emailg);
+         }catch(error){
+            console.log("error");
+         }
+      });
 
+      getemail();
+      console.log("emailll",email,emailg);
+      },[email,emailg]);
+
+  const navigation=useNavigation()
     const handleSignOut = () => {
+         AsyncStorage.removeItem('email1'); 
         auth.signOut().then(() => {
             navigation.replace("Login")
         }).catch(error => alert(error.message))
     }
-
   return (
     
     
@@ -27,12 +45,12 @@ function HomeScreen() {
           <Text style={styles.textStyle}>GO TO LAB</Text>
         </TouchableOpacity>
       </View>
-      {/* <TouchableOpacity 
+      <TouchableOpacity 
         onPress={handleSignOut}
         style={styles.button}>
         <Text style={styles.buttonText}>Sign Out</Text>
       </TouchableOpacity>
-      <Text style={styles.bottomCenter}>Signed in as: {auth.currentUser?.email}</Text> */}
+      <Text style={styles.bottomCenter}>Signed in as: {email}</Text>
     </View>
   );
 }

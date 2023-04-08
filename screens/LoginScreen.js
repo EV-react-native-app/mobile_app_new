@@ -12,6 +12,7 @@ import React, {useEffect, useState} from 'react';
 import {auth} from './firebase';
 import {useNavigation} from '@react-navigation/native';
 import Logo from '../assets/images/Logo_1.png';
+import  AsyncStorage  from '@react-native-async-storage/async-storage';
 
 const LoginScreen = () => {
   const {height} = useWindowDimensions();
@@ -21,34 +22,85 @@ const LoginScreen = () => {
 
   const navigation = useNavigation();
 
+  const changePassword = () => {
+    auth.sendPasswordResetEmail(email)
+    .then(() => {
+      alert(' password rest mail sent')
+
+    }).catch((error)=>{
+      alert(error)
+    })
+  }
+
   useEffect(() => {
+  //  const 
+   let emailg;
+    const getemail=(async ()=> {
+        try{
+         emailg=await AsyncStorage.getItem('email1');
+          console.log("lajflafa",emailg); 
+          if(emailg!=null)navigation.replace("Home");
+       }catch(error){
+          console.log("error");
+       }
+    });
+    getemail();
+    // navigation.replace("Home");
+    // console.log("akjfla",emailg);
+    // if(emailg!=null && emailg!=undefined)navigation.replace('Home');
+
+    console.log("helo");
+     
+    // let emailg=NULL;
+    //  emailg =await AsyncStorage.getItem('email2');
+    // console.log("printthroug cache memory",emailg);
+    
+    // navigation.replace('Home');
+
     const unsubscribe = auth.onAuthStateChanged(user => {
       if (user) {
         navigation.replace('Home');
       }
+      // const datafetch = 
     });
 
-    return unsubscribe;
-  }, []);
+    // const insertData = 
 
-  const handleSignup = () => {
+    return unsubscribe;
+  }, [email]);
+
+  // useEffect(async()=>{
+  //    {
+  //     let  
+  // },[email]);
+
+  const handleSignup =async () => {
     auth
       .createUserWithEmailAndPassword(email, password)
       .then(userCredentials => {
         const user = userCredentials.user;
+
         console.log('Logged in with email: ' + user.email);
       })
       .catch(error => alert(error.message));
+      AsyncStorage.setItem('email1',email);
+
   };
 
-  const handleLogin = () => {
+  const handleLogin = async() => {
     auth
       .signInWithEmailAndPassword(email, password)
       .then(userCredentials => {
         const user = userCredentials.user;
+
+
         console.log('Logged in with email: ' + user.email);
       })
       .catch(error => alert(error.message));
+              AsyncStorage.setItem('email1',email);
+              // let emailg =await AsyncStorage.getItem('email1');
+              // console.log("printthroug cache memory",emailg);
+
   };
   return (
     <KeyboardAvoidingView style={styles.container} behavior="padding">
@@ -62,6 +114,7 @@ const LoginScreen = () => {
         </View>
         <TextInput
           placeholder="Email"
+          placeholderTextColor={"#c0c0c0"}
           value={email}
           onChangeText={text => setEmail(text)}
           style={styles.input}
@@ -69,6 +122,7 @@ const LoginScreen = () => {
 
         <TextInput
           placeholder="Password"
+          placeholderTextColor={'#c0c0c0'}
           value={password}
           onChangeText={text => setPassword(text)}
           style={styles.input}
@@ -85,6 +139,14 @@ const LoginScreen = () => {
           style={[styles.button, styles.buttonOutline]}>
           <Text style={styles.buttonOutlineText}>Register</Text>
         </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() =>{
+            changePassword();
+          }}
+          style={styles.button1}
+          >
+            <Text style={{}}>Forgot Password?</Text>
+          </TouchableOpacity>
       </View>
     </KeyboardAvoidingView>
   );
@@ -115,6 +177,7 @@ const styles = StyleSheet.create({
 
   input: {
     backgroundColor: 'white',
+    color: "black",
     paddingHorizontal: 15,
     paddingVertical: 10,
     borderRadius: 10,
@@ -146,6 +209,29 @@ const styles = StyleSheet.create({
   },
   buttonOutlineText: {
     color: '#0782F9',
+    fontWeight: 700,
+    fontSize: 16,
+  },
+  button1: {
+    backgroundColor: "#black",
+    width: "100%",
+    padding: 15,
+    borderRadius: 10,
+    alignItems: "center",
+    // position: "absolute",
+    // bottom : 0,
+  // top: 0,
+  // right: 0,
+    // marginTop: 40,
+  },
+  buttonOutline1: {
+    backgroundColor: "white",
+    marginTop: 5,
+    borderColor: "#0782F9",
+    borderWidth: 2,
+  },
+  buttonText1: {
+    color: "white",
     fontWeight: 700,
     fontSize: 16,
   },
