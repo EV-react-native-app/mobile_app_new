@@ -79,6 +79,14 @@ const LoginScreen = () => {
       .createUserWithEmailAndPassword(email, password)
       .then(userCredentials => {
         const user = userCredentials.user;
+        auth.currentUser.sendEmailVerification({
+          handleCodeInApp: true,
+          url: "https://fir-auth-703bc.firebaseapp.com",
+        }).then(()=>{
+          alert("Verification mail sent")
+        }).catch((err)=>{
+          alert(err.message)
+        })
 
         console.log('Logged in with email: ' + user.email);
       })
