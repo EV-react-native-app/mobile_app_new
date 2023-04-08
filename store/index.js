@@ -7,7 +7,7 @@ const dataSlice = createSlice({
   initialState: initialState,
   reducers: {
     setData: (state, action) => {
-      console.log("SensePCB data : "+action.payload.toString());
+      // console.log("SensePCB data : "+action.payload.toString());
       state.data = action.payload;
     },
     setSensePCBConnected : (state, action) =>{

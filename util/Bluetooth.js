@@ -73,7 +73,7 @@ const BluetoothScanner = ({navigation}) => {
       navigation.navigate('Details');
     }
   }, [isConnected]);
-
+  let onetime = true;
   // reading the data from esp32
   const readData = async tapCode => {
     return manager.monitorCharacteristicForDevice(
@@ -84,7 +84,17 @@ const BluetoothScanner = ({navigation}) => {
         if (error) {
           console.log('Error is ', error);
         }
+        if(onetime){
+          var newdate =  Date.now().toString();
+        var newDateType = Buffer.from("128"+newdate).toString('base64');
+        await characteristic.writeWithResponse(newDateType);
+        onetime = false;
+        }
+
+        
+        // await characteristic.updateTime();
         const value = await characteristic.read();
+        
         // console.log('Characteristic value: ', characteristic.value);
         const parsedValue = Buffer.from(value.value, 'base64');
         const buffer = Buffer.from(parsedValue);

@@ -27,12 +27,12 @@ function HomeScreen() {
           <Text style={styles.textStyle}>GO TO LAB</Text>
         </TouchableOpacity>
       </View>
-      <TouchableOpacity 
+      {/* <TouchableOpacity 
         onPress={handleSignOut}
         style={styles.button}>
         <Text style={styles.buttonText}>Sign Out</Text>
       </TouchableOpacity>
-      <Text style={styles.bottomCenter}>Signed in as: {auth.currentUser?.email}</Text>
+      <Text style={styles.bottomCenter}>Signed in as: {auth.currentUser?.email}</Text> */}
     </View>
   );
 }

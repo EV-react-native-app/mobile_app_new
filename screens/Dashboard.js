@@ -1,12 +1,16 @@
-import {StyleSheet, View, Text, Dimensions, PermissionsAndroid} from 'react-native';
+import {StyleSheet, View, Text, Dimensions, PermissionsAndroid, ScrollView,TouchableOpacity} from 'react-native';
 import Tiles from '../components/Tiles';
 import {Colors} from '../constants/Colors';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {useEffect, useState} from 'react';
 import Geolocation from '@react-native-community/geolocation';
 import {useSelector} from 'react-redux';
-// import {fi}
-import { collection, setDoc, doc } from "firebase/firestore";
+// import { db } from './firebase';
+// import { collection, setDoc, doc } from "firebase/firestore";
+// import { collection, addDoc, setDoc,doc } from "firebase/firestore"; 
+// import { initializeApp } from "firebase/app";
+// import { getFirestore } from "firebase/firestore";
+import firestore from '@react-native-firebase/firestore';
 
 function Dashboard() {
  
@@ -75,7 +79,7 @@ function Dashboard() {
       //Will give you the current location
       async (position) => {
         setLocationStatus('You are Here');
-        console.log(position);
+        // console.log(position);
         //getting the Longitude from the location json
         const currentLongitude = 
           JSON.stringify(position.coords.longitude);
@@ -99,7 +103,7 @@ function Dashboard() {
         const R = 6371e3; // metres
         var lat2 = parseFloat(currentLatitude);
         var long2 = parseFloat(currentLongitude);
-        console.log(lat1.toString() + " " + lat2.toString());
+        // console.log(lat1.toString() + " " + lat2.toString());
         const φ1 = lat1 * Math.PI/180; // φ, λ in radians
         const φ2 = lat2 * Math.PI/180;
         const Δφ = (lat2-lat1) * Math.PI/180;
@@ -111,16 +115,28 @@ function Dashboard() {
         const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
 
         const d = R * c; // in metres
-        console.log("distance" + d.toString());
+        // console.log("distance" + d.toString());
         setCurrentDistance(d.toFixed(2));
         
+        var timestamp = new Date();
+        const uplaodData = {
+          "voltage":vol,
+          "current":cur,
+          "avg_temp":avgtemp,
+          "power":power,
+          "speed":position.coords.speed.toString(),
+          "distance":d.toFixed(2).toString(),
+          "latitude":position.coords.latitude.toString(),
+          "longitude" : position.coords.longitude.toString(),
+          "timestamp":timestamp.toISOString().toString(),
+        }
+        firestore()
+                .collection('testing').doc(timestamp.toISOString().toString())
+                .set(uplaodData)
+                .then(() => {
+                  console.log('User added!');
+                });
 
-        await setDoc(doc(db, "cities", "LA"), {
-          name: "Los Angeles",
-          state: "CA",
-          country: "USA"
-        });
-        
 
       },
       (error) => {
@@ -140,7 +156,7 @@ function Dashboard() {
         //Will give you the location on location change
         
         setLocationStatus('You are Here');
-        console.log(position);
+        // console.log(position);
 
         //getting the Longitude from the location json        
         const currentLongitude =
@@ -185,7 +201,8 @@ function Dashboard() {
   const power = ((vol * cur) / 1000).toFixed(2);
 
   return (
-    <View style={styles.mainContainer}>
+    <ScrollView>
+      <View style={styles.mainContainer}>
       <View style={styles.container1}>
         <View>
           {/* Left Box */}
@@ -202,9 +219,16 @@ function Dashboard() {
             </View>
           </View>
         </View>
-        {/* <View>
-          <Tiles dataname="0 hr 0 min" unit="Upload" />
-        </View> */}
+        <View>
+        {/* <TouchableOpacity
+          onPress={async () => {
+            
+                    
+          }}>
+          <Text>Upload</Text>
+        </TouchableOpacity> */}
+          
+        </View>
       </View>
       
       
@@ -282,6 +306,8 @@ function Dashboard() {
         </View>
       </View>
     </View>
+    <View style={{height:32}}></View>
+    </ScrollView>
   );
 }
 
