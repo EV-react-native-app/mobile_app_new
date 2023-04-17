@@ -10,16 +10,14 @@ import {
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {auth} from './firebase';
-import {useNavigation} from '@react-navigation/native';
+import { useNavigation, NavigationContainer } from '@react-navigation/native'
 import Logo from '../assets/images/Logo_1.png';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
   GoogleSignin,
   statusCodes,
 } from '@react-native-google-signin/google-signin';
-import { SocialIcon } from 'react-native-elements';
-
-
+import {SocialIcon} from 'react-native-elements';
 
 const LoginScreen = () => {
   const {height} = useWindowDimensions();
@@ -47,8 +45,11 @@ const LoginScreen = () => {
     const getemail = async () => {
       try {
         emailg = await AsyncStorage.getItem('email1');
-        console.log('lajflafa', emailg);
-        if (emailg != null) navigation.replace('Home');
+        // console.log('lajflafa', emailg);
+        if (emailg != null) 
+        // navigation.replace('Home');
+        navigation.navigate('Welcome Page');
+
       } catch (error) {
         console.log('error');
       }
@@ -58,7 +59,7 @@ const LoginScreen = () => {
     // console.log("akjfla",emailg);
     // if(emailg!=null && emailg!=undefined)navigation.replace('Home');
 
-    console.log('helo');
+    // console.log('helo');
 
     // let emailg=NULL;
     //  emailg =await AsyncStorage.getItem('email2');
@@ -68,7 +69,9 @@ const LoginScreen = () => {
 
     const unsubscribe = auth.onAuthStateChanged(user => {
       if (user) {
-        navigation.replace('Home');
+        // navigation.replace('Home');
+        navigation.navigate('Welcome Page');
+
       }
       // const datafetch =
     });
@@ -132,9 +135,10 @@ const LoginScreen = () => {
       const userInfo = await GoogleSignin.signIn();
       // console.log(userInfo);
       let email2 = userInfo.user.email;
-      console.log("Signed in as " + email2);
+      console.log('Signed in as ' + email2);
       AsyncStorage.setItem('email1', email2);
-      navigation.replace('Home');
+      // navigation.replace('Home'); //make it Home
+      navigation.navigate('Welcome Page');
 
       // this.setState({ userInfo });
     } catch (error) {
@@ -207,17 +211,17 @@ const LoginScreen = () => {
           style={styles.button1}
           backgroundColor="red"
           onPress={signIn}
-          title='Sign In with Google'
+          title="Sign In with Google"
           button
-          type='google'
+          type="google"
         />
         <TouchableOpacity
           onPress={() => {
             changePassword();
           }}
           // style={styles.button1}
-          >
-          <Text style={{}}>Forgot Password? Click here</Text>
+        >
+          <Text style={{marginVertical:15}}>Forgot Password?</Text>
         </TouchableOpacity>
       </View>
     </KeyboardAvoidingView>

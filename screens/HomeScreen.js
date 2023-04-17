@@ -1,10 +1,20 @@
+import 'react-native-gesture-handler';
 import {StyleSheet, Text, View} from 'react-native';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import React, {useEffect, useState,useLayoutEffect,useMemo} from 'react';
 import {Colors} from '../constants/Colors';
 import { auth } from './firebase'
-import { useNavigation } from '@react-navigation/native'
+import { useNavigation, NavigationContainer } from '@react-navigation/native'
 import  AsyncStorage  from '@react-native-async-storage/async-storage';
+import {createDrawerNavigator} from '@react-navigation/drawer';
+
+import Details from './Details';
+import LoginScreen from './LoginScreen';
+import Statistics from './Statistics';
+import Summary from './Summary';
+const Drawer=createDrawerNavigator();
+
+
 
 function HomeScreen() {
   const [email, setEmail] = useState('null');
@@ -21,7 +31,7 @@ function HomeScreen() {
       });
 
       getemail();
-      console.log("emailll",email,emailg);
+      // console.log("emailll",email,emailg);
       },[email,emailg]);
 
   const navigation=useNavigation()
@@ -32,25 +42,13 @@ function HomeScreen() {
         }).catch(error => alert(error.message))
     }
   return (
-    
-    
     <View style={styles.container}>
+      <Text style={styles.text}>Welcome: {email}</Text>
 
-      <Text style={styles.text}>Welcome to Cell Doc</Text>
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity
-          onPress={() => {
-            navigation.navigate('Details');
-          }}>
-          <Text style={styles.textStyle}>GO TO LAB</Text>
-        </TouchableOpacity>
-      </View>
-      <TouchableOpacity 
-        onPress={handleSignOut}
-        style={styles.button}>
-        <Text style={styles.buttonText}>Sign Out</Text>
-      </TouchableOpacity>
-      <Text style={styles.bottomCenter}>Signed in as: {email}</Text>
+        
+      <Text onPress={handleSignOut} style={styles.bottomCenter}>Sign Out</Text>
+      {/* <Text onPress={handleSignOut} style={styles.bottomCenter}>Welcome: {email}</Text> */}
+      
     </View>
   );
 }
@@ -61,25 +59,27 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    justifyContent: 'center',
+    // justifyContent: 'center',
     backgroundColor: '#282A3A',
   },
   text: {
-    fontSize: 24,
+    fontSize: 14,
     color: 'white',
     marginBottom: 24,
+    marginTop:15,
     fontWeight: 'bold',
   },
   bottomCenter: {
-    width: '100%',
-  height: 50,
+    // width: '100%',
+  // height: 50,
   // backgroundColor: '#EE5407',
   color: 'white',
   justifyContent: 'center',
   alignSelf: 'center',
   alignItems: 'center',
   position: 'absolute', //Here is the trick
-  bottom: 0, //Here is the trick
+  bottom: 10, //Here is the trick
+  // left: 50,
 },
   buttonContainer: {
     borderColor: Colors.primary400,
@@ -100,10 +100,13 @@ const styles = StyleSheet.create({
   },
   button: {
     backgroundColor: "#black",
-    width: "60%",
-    padding: 15,
-    borderRadius: 10,
-    // alignItems: "center",
+    // width: "60%",
+    // padding: 15,
+    // borderRadius: 10,
+    // position: 'absolute', //Here is the trick
+    
+    bottom: 10, //Here is the trick
+    alignItems: "center",
     // position: "absolute",
     // bottom : 0,
   // top: 0,
