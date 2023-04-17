@@ -12,7 +12,11 @@ import React, {useEffect, useState} from 'react';
 import {auth} from './firebase';
 import {useNavigation} from '@react-navigation/native';
 import Logo from '../assets/images/Logo_1.png';
-import  AsyncStorage  from '@react-native-async-storage/async-storage';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {
+  GoogleSignin,
+  statusCodes,
+} from '@react-native-google-signin/google-signin';
 
 const LoginScreen = () => {
   const {height} = useWindowDimensions();
@@ -23,92 +27,124 @@ const LoginScreen = () => {
   const navigation = useNavigation();
 
   const changePassword = () => {
-    auth.sendPasswordResetEmail(email)
-    .then(() => {
-      alert(' password rest mail sent')
-
-    }).catch((error)=>{
-      alert(error)
-    })
-  }
+    auth
+      .sendPasswordResetEmail(email)
+      .then(() => {
+        alert(' password rest mail sent');
+      })
+      .catch(error => {
+        alert(error);
+      });
+  };
 
   useEffect(() => {
-  //  const 
-   let emailg;
-    const getemail=(async ()=> {
-        try{
-         emailg=await AsyncStorage.getItem('email1');
-          console.log("lajflafa",emailg); 
-          if(emailg!=null)navigation.replace("Home");
-       }catch(error){
-          console.log("error");
-       }
-    });
+    // GoogleSignin.configure()
+    //  const
+    let emailg;
+    const getemail = async () => {
+      try {
+        emailg = await AsyncStorage.getItem('email1');
+        console.log('lajflafa', emailg);
+        if (emailg != null) navigation.replace('Home');
+      } catch (error) {
+        console.log('error');
+      }
+    };
     getemail();
     // navigation.replace("Home");
     // console.log("akjfla",emailg);
     // if(emailg!=null && emailg!=undefined)navigation.replace('Home');
 
-    console.log("helo");
-     
+    console.log('helo');
+
     // let emailg=NULL;
     //  emailg =await AsyncStorage.getItem('email2');
     // console.log("printthroug cache memory",emailg);
-    
+
     // navigation.replace('Home');
 
     const unsubscribe = auth.onAuthStateChanged(user => {
       if (user) {
         navigation.replace('Home');
       }
-      // const datafetch = 
+      // const datafetch =
     });
 
-    // const insertData = 
+    // const insertData =
 
     return unsubscribe;
   }, [email]);
 
   // useEffect(async()=>{
   //    {
-  //     let  
+  //     let
   // },[email]);
 
-  const handleSignup =async () => {
+  const handleSignup = async () => {
     auth
       .createUserWithEmailAndPassword(email, password)
       .then(userCredentials => {
         const user = userCredentials.user;
-        auth.currentUser.sendEmailVerification({
-          handleCodeInApp: true,
-          url: "https://fir-auth-703bc.firebaseapp.com",
-        }).then(()=>{
-          alert("Verification mail sent")
-        }).catch((err)=>{
-          alert(err.message)
-        })
+        auth.currentUser
+          .sendEmailVerification({
+            handleCodeInApp: true,
+            url: 'https://fir-auth-703bc.firebaseapp.com',
+          })
+          .then(() => {
+            alert('Verification mail sent');
+          })
+          .catch(err => {
+            alert(err.message);
+          });
 
         console.log('Logged in with email: ' + user.email);
       })
       .catch(error => alert(error.message));
-      AsyncStorage.setItem('email1',email);
-
+    AsyncStorage.setItem('email1', email);
   };
 
-  const handleLogin = async() => {
+  const handleLogin = async () => {
     auth
       .signInWithEmailAndPassword(email, password)
       .then(userCredentials => {
         const user = userCredentials.user;
 
-
         console.log('Logged in with email: ' + user.email);
       })
       .catch(error => alert(error.message));
-              AsyncStorage.setItem('email1',email);
-              // let emailg =await AsyncStorage.getItem('email1');
-              // console.log("printthroug cache memory",emailg);
+    AsyncStorage.setItem('email1', email);
+    // let emailg =await AsyncStorage.getItem('email1');
+    // console.log("printthroug cache memory",emailg);
+  };
 
+  GoogleSignin.configure({
+    webClientId:
+      '329887065582-t4m6ugscd7ee7hli2qvd9r44qaljr8hm.apps.googleusercontent.com',
+  });
+
+  const signIn = async () => {
+    try {
+      await GoogleSignin.hasPlayServices();
+      await GoogleSignin.signOut();
+      const userInfo = await GoogleSignin.signIn();
+      console.log(userInfo);
+      // this.setState({ userInfo });
+    } catch (error) {
+      if (error.code === statusCodes.SIGN_IN_CANCELLED) {
+        console.log('sign in cancelled');
+        // user cancelled the login flow
+      } else if (error.code === statusCodes.IN_PROGRESS) {
+        console.log('in progress');
+        // operation (e.g. sign in) is in progress already
+      } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
+        console.log('play_services_not_available');
+        // play services not available or outdated
+      } else {
+        // some other error happened
+        console.log('error occurred: ');
+        console.log(error);
+      }
+    }
   };
   return (
     <KeyboardAvoidingView style={styles.container} behavior="padding">
@@ -122,7 +158,7 @@ const LoginScreen = () => {
         </View>
         <TextInput
           placeholder="Email"
-          placeholderTextColor={"#c0c0c0"}
+          placeholderTextColor={'#c0c0c0'}
           value={email}
           onChangeText={text => setEmail(text)}
           style={styles.input}
@@ -148,13 +184,23 @@ const LoginScreen = () => {
           <Text style={styles.buttonOutlineText}>Register</Text>
         </TouchableOpacity>
         <TouchableOpacity
-          onPress={() =>{
+          onPress={signIn}
+          style={[styles.button, styles.buttonOutline]}>
+          <Text style={styles.buttonOutlineText}>Sign in with Google</Text>
+        </TouchableOpacity>
+        {/* <TouchableOpacity
+          style={{width: 200, height:50, justifyContent: 'center',alignItems: 'center',borderWidth:0.5, alignSelf: 'center', marginTop:50,}}
+          onPress={()=>{
+
+          }}>
+        </TouchableOpacity> */}
+        <TouchableOpacity
+          onPress={() => {
             changePassword();
           }}
-          style={styles.button1}
-          >
-            <Text style={{}}>Forgot Password?</Text>
-          </TouchableOpacity>
+          style={styles.button1}>
+          <Text style={{}}>Forgot Password?</Text>
+        </TouchableOpacity>
       </View>
     </KeyboardAvoidingView>
   );
@@ -185,7 +231,7 @@ const styles = StyleSheet.create({
 
   input: {
     backgroundColor: 'white',
-    color: "black",
+    color: 'black',
     paddingHorizontal: 15,
     paddingVertical: 10,
     borderRadius: 10,
@@ -221,25 +267,25 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   button1: {
-    backgroundColor: "#black",
-    width: "100%",
+    backgroundColor: '#black',
+    width: '100%',
     padding: 15,
     borderRadius: 10,
-    alignItems: "center",
+    alignItems: 'center',
     // position: "absolute",
     // bottom : 0,
-  // top: 0,
-  // right: 0,
+    // top: 0,
+    // right: 0,
     // marginTop: 40,
   },
   buttonOutline1: {
-    backgroundColor: "white",
+    backgroundColor: 'white',
     marginTop: 5,
-    borderColor: "#0782F9",
+    borderColor: '#0782F9',
     borderWidth: 2,
   },
   buttonText1: {
-    color: "white",
+    color: 'white',
     fontWeight: 700,
     fontSize: 16,
   },
