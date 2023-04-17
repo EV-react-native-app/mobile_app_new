@@ -17,6 +17,9 @@ import {
   GoogleSignin,
   statusCodes,
 } from '@react-native-google-signin/google-signin';
+import { SocialIcon } from 'react-native-elements';
+
+
 
 const LoginScreen = () => {
   const {height} = useWindowDimensions();
@@ -119,7 +122,7 @@ const LoginScreen = () => {
 
   GoogleSignin.configure({
     webClientId:
-      '329887065582-t4m6ugscd7ee7hli2qvd9r44qaljr8hm.apps.googleusercontent.com',
+      '333788058442-cedlsn463ri5ln5j4farsj4ajaufsnn8.apps.googleusercontent.com',
   });
 
   const signIn = async () => {
@@ -127,7 +130,12 @@ const LoginScreen = () => {
       await GoogleSignin.hasPlayServices();
       await GoogleSignin.signOut();
       const userInfo = await GoogleSignin.signIn();
-      console.log(userInfo);
+      // console.log(userInfo);
+      let email2 = userInfo.user.email;
+      console.log("Signed in as " + email2);
+      AsyncStorage.setItem('email1', email2);
+      navigation.replace('Home');
+
       // this.setState({ userInfo });
     } catch (error) {
       if (error.code === statusCodes.SIGN_IN_CANCELLED) {
@@ -183,23 +191,33 @@ const LoginScreen = () => {
           style={[styles.button, styles.buttonOutline]}>
           <Text style={styles.buttonOutlineText}>Register</Text>
         </TouchableOpacity>
-        <TouchableOpacity
+        {/* <TouchableOpacity
           onPress={signIn}
           style={[styles.button, styles.buttonOutline]}>
           <Text style={styles.buttonOutlineText}>Sign in with Google</Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
         {/* <TouchableOpacity
           style={{width: 200, height:50, justifyContent: 'center',alignItems: 'center',borderWidth:0.5, alignSelf: 'center', marginTop:50,}}
           onPress={()=>{
 
           }}>
         </TouchableOpacity> */}
+        <SocialIcon
+          // button= true
+          style={styles.button1}
+          backgroundColor="red"
+          onPress={signIn}
+          title='Sign In with Google'
+          button
+          type='google'
+        />
         <TouchableOpacity
           onPress={() => {
             changePassword();
           }}
-          style={styles.button1}>
-          <Text style={{}}>Forgot Password?</Text>
+          // style={styles.button1}
+          >
+          <Text style={{}}>Forgot Password? Click here</Text>
         </TouchableOpacity>
       </View>
     </KeyboardAvoidingView>
@@ -267,10 +285,10 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   button1: {
-    backgroundColor: '#black',
+    backgroundColor: 'red',
     width: '100%',
     padding: 15,
-    borderRadius: 10,
+    borderRadius: 25,
     alignItems: 'center',
     // position: "absolute",
     // bottom : 0,
