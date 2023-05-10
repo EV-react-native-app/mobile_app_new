@@ -5,6 +5,7 @@ import {createStackNavigator} from '@react-navigation/stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import HomeScreen from './screens/HomeScreen';
 import Summary from './screens/Summary';
+import Splash from './components/Splash';
 import TempVsTime from './screens/TempVsTime';
 import VoltageVsTime from './screens/VoltageVsTime';
 import CurrentVsTime from './screens/CurrentVsTime';
@@ -229,7 +230,9 @@ function App() {
       }}>
         
       <Stack.Navigator>
+        <Stack.Screen options={{ headerShown: false}} name="Splash" component={Splash} />
         <Stack.Screen options={{ headerShown: false}} name="Login" component={LoginScreen} />
+
         <Stack.Screen options={{ headerShown: false}} name="Home" component={HomeScreen} />   
         {/* <Stack.Screen
           name="Details"

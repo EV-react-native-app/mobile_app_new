@@ -18,11 +18,15 @@ import {
   statusCodes,
 } from '@react-native-google-signin/google-signin';
 import {SocialIcon} from 'react-native-elements';
+import AppLoader from '../components/AppLoader';
+import { log } from 'react-native-reanimated';
 
 const LoginScreen = () => {
   const {height} = useWindowDimensions();
+  // loginPending = false;
 
   const [email, setEmail] = useState('');
+  const [loginPending, setLoginPending] = useState(false);
   const [password, setPassword] = useState('');
 
   const navigation = useNavigation();
@@ -68,11 +72,15 @@ const LoginScreen = () => {
     // navigation.replace('Home');
 
     const unsubscribe = auth.onAuthStateChanged(user => {
+      // setLoginPending(true);
       if (user) {
         // navigation.replace('Home');
+        // console.log("user is:" + user);
         navigation.navigate('Welcome Page');
-
+        
+        
       }
+      // setLoginPending(false);
       // const datafetch =
     });
 
@@ -87,6 +95,8 @@ const LoginScreen = () => {
   // },[email]);
 
   const handleSignup = async () => {
+    setLoginPending(true);
+
     auth
       .createUserWithEmailAndPassword(email, password)
       .then(userCredentials => {
@@ -105,11 +115,19 @@ const LoginScreen = () => {
 
         console.log('Logged in with email: ' + user.email);
       })
-      .catch(error => alert(error.message));
+      .catch(error => {
+        alert(error.message);
+          setLoginPending(false);
+      });
+      if(user)
     AsyncStorage.setItem('email1', email);
+    setLoginPending(false);
+
   };
 
   const handleLogin = async () => {
+    setLoginPending(true);
+
     auth
       .signInWithEmailAndPassword(email, password)
       .then(userCredentials => {
@@ -117,8 +135,20 @@ const LoginScreen = () => {
 
         console.log('Logged in with email: ' + user.email);
       })
-      .catch(error => alert(error.message));
+      .catch(error => {
+        user=null;
+        alert(error.message);
+          setLoginPending(false);
+      });
+      // .catch(error);{
+      //   // alert(error.message);
+
+
+      // };
+      if(user)
     AsyncStorage.setItem('email1', email);
+    // setLoginPending(false);
+
     // let emailg =await AsyncStorage.getItem('email1');
     // console.log("printthroug cache memory",emailg);
   };
@@ -129,6 +159,7 @@ const LoginScreen = () => {
   });
 
   const signIn = async () => {
+    setLoginPending(true);
     try {
       await GoogleSignin.hasPlayServices();
       await GoogleSignin.signOut();
@@ -157,8 +188,10 @@ const LoginScreen = () => {
         console.log(error);
       }
     }
+    setLoginPending(false);
   };
   return (
+    <>
     <KeyboardAvoidingView style={styles.container} behavior="padding">
       <View style={styles.inputContainer}>
         <View style={styles.root}>
@@ -225,6 +258,9 @@ const LoginScreen = () => {
         </TouchableOpacity>
       </View>
     </KeyboardAvoidingView>
+    
+    {loginPending ? <AppLoader/> : null}
+    </>
   );
 };
 
