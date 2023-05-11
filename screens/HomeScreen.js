@@ -23,7 +23,7 @@ function HomeScreen() {
       const getemail=(async ()=> {
           try{
            emailg=await AsyncStorage.getItem('email1');
-            console.log("laj",emailg);
+            // console.log("laj",emailg);
             setEmail(emailg);
          }catch(error){
             console.log("error");

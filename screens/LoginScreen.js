@@ -50,9 +50,11 @@ const LoginScreen = () => {
       try {
         emailg = await AsyncStorage.getItem('email1');
         // console.log('lajflafa', emailg);
-        if (emailg != null) 
+        if (emailg != null) {
         // navigation.replace('Home');
+        // console.log('emailg iis not null');
         navigation.navigate('Welcome Page');
+        }
 
       } catch (error) {
         console.log('error');
@@ -76,6 +78,7 @@ const LoginScreen = () => {
       if (user) {
         // navigation.replace('Home');
         // console.log("user is:" + user);
+        // console.log("user is not null");
         navigation.navigate('Welcome Page');
         
         
@@ -113,14 +116,14 @@ const LoginScreen = () => {
             alert(err.message);
           });
 
-        console.log('Logged in with email: ' + user.email);
+        console.log('Registered with email: ' + user.email);
+        AsyncStorage.setItem('email1', email);
       })
       .catch(error => {
         alert(error.message);
           setLoginPending(false);
       });
       if(user)
-    AsyncStorage.setItem('email1', email);
     setLoginPending(false);
 
   };
@@ -134,9 +137,10 @@ const LoginScreen = () => {
         const user = userCredentials.user;
 
         console.log('Logged in with email: ' + user.email);
+        AsyncStorage.setItem('email1', email);
       })
       .catch(error => {
-        user=null;
+        // user=null;
         alert(error.message);
           setLoginPending(false);
       });
@@ -145,8 +149,9 @@ const LoginScreen = () => {
 
 
       // };
-      if(user)
-    AsyncStorage.setItem('email1', email);
+      // if(user){
+        // console.log("user is" + userCredentials.user);
+      // }
     // setLoginPending(false);
 
     // let emailg =await AsyncStorage.getItem('email1');
